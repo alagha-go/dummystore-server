@@ -10,13 +10,13 @@ import (
 )
 
 
-func UpdateUser(user User) (User, error, int) {
+func UpdateUser(user User) (User, int, error) {
 	var dbUser User
 	ctx := context.Background()
 	collection := v.Client.Database("Dummystore").Collection("Users")
 	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&dbUser)
 	if err != nil {
-		return User{}, errors.New("user does not exist"), 404
+		return User{}, 404, errors.New("user does not exist")
 	}
 
 	if user.Public {
@@ -33,14 +33,14 @@ func UpdateUser(user User) (User, error, int) {
 	}else {
 		valid := IsEmailValid(user.Email)
 		if !valid {
-			return User{}, errors.New("invalid email address"), 400
+			return User{}, 400, errors.New("invalid email address")
 		}
 	}
 
 	if user.NewPassword != "" {
 		valid := CompareHash(user.Password, dbUser.Password)
 		if !valid {
-			return User{}, errors.New("wrong password"), 401
+			return User{}, 401, errors.New("wrong password")
 		}
 		user.Password = Hasher([]byte(user.NewPassword))
 		user.NewPassword = ""
@@ -53,11 +53,11 @@ func UpdateUser(user User) (User, error, int) {
 
 	_, err = collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return User{}, errors.New("could not update user"), 500
+		return User{}, 500, errors.New("could not update user")
 	}
 
 	collection.FindOne(ctx, bson.M{"_id": user.ID}).Decode(&user)
-	return user, nil, 200
+	return user, 200, nil
 }
 
 

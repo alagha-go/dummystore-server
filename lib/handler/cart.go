@@ -25,7 +25,7 @@ func AddToCart(res http.ResponseWriter, req *http.Request) {
 	if quantity == 0 {
 		quantity = 1
 	}
-	user, err, status := VerifyUser(req)
+	user, status, err := VerifyUser(req)
 	if err != nil {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -39,7 +39,7 @@ func AddToCart(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	cart, err, status := cart.AddProductToCart(user.ID, ID, quantity)
+	cart, status, err := cart.AddProductToCart(user.ID, ID, quantity)
 	res.WriteHeader(status)
 	if err != nil {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -55,7 +55,7 @@ func UpdateCart(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	
-	user, err, status := VerifyUser(req)
+	user, status, err := VerifyUser(req)
 	if err != nil {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -98,7 +98,7 @@ func UpdateCart(res http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
 		return
 	}
-	cart, err, status := cart.GetCart(ID)
+	cart, status, err := cart.GetCart(ID)
 	res.WriteHeader(status)
 	if err != nil {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -115,7 +115,7 @@ func DeleteCart(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	user, err, status := VerifyUser(req)
+	user, status, err := VerifyUser(req)
 	if err != nil {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -161,7 +161,7 @@ func GetMyCart(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(405)
 		return
 	}
-	user, err, status := VerifyUser(req)
+	user, status, err := VerifyUser(req)
 	if err != nil {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})

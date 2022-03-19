@@ -44,7 +44,7 @@ type Type struct {
 }
 
 
-func GetAllDepartments() ([]Department, error, int){
+func GetAllDepartments() ([]Department, int, error){
 	var  departments []Department
 
 	ctx := context.Background()
@@ -53,7 +53,7 @@ func GetAllDepartments() ([]Department, error, int){
 
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil{
-		return nil, errors.New(Databaseerror), 500
+		return nil, 500, errors.New(Databaseerror)
 	}
 		
 	defer cursor.Close(ctx)
@@ -64,5 +64,5 @@ func GetAllDepartments() ([]Department, error, int){
 	}
 
 	
-	return departments, nil, 200
+	return departments, 200, nil
 }

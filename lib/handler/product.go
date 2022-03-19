@@ -20,10 +20,10 @@ func GetProductByAttribute(res http.ResponseWriter, req *http.Request) {
 	asin := req.URL.Query().Get("asin")
 
 	if id != "" {
-		data, err, status = p.GetProductByID(id)
+		data, status, err = p.GetProductByID(id)
 		res.WriteHeader(status)
 	}else if asin != ""{
-		data, err, status = p.GetProductByAsin(asin)
+		data, status, err = p.GetProductByAsin(asin)
 		res.WriteHeader(status)
 	}else {
 		json.NewEncoder(res).Encode(Error{Error: "provide a product id or asin"})

@@ -13,7 +13,7 @@ func GetAllDepartments(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(405)
 		return
 	}
-	data, err, status := dep.GetAllDepartments()
+	data, status, err := dep.GetAllDepartments()
 	res.WriteHeader(status)
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)

@@ -4,7 +4,11 @@ import (
 	"context"
 	v "dummystore/lib/variables"
 	"errors"
+	"fmt"
+	"io"
+	"mime/multipart"
 	"net/mail"
+	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,6 +19,7 @@ type User struct {
 	ID										primitive.ObjectID								`json:"_id,omitempty" bson:"_id,omitempty"`
 	UserName								string											`json:"user_name,omitempty" bson:"user_name,omitempty"`
 	Email									string											`json:"email,omitempty" bson:"email,omitempty"`
+	ImageFile								multipart.File
 	Public									bool											`json:"public,omitempty" bson:"public,omitempty"`
 	RealPassword							string											`json:"real_password,omitempty" bson:"real_password,omitempty"`
 	Password								string											`json:"password,omitempty" bson:"password,omitempty"`
@@ -22,7 +27,7 @@ type User struct {
 }
 
 
-func CreateUser(user User) (Token, error, int) {
+func CreateUser(user User) (Token, int, error) {
 	var dbUser User
 	user.ID = primitive.NewObjectID()
 
@@ -31,33 +36,42 @@ func CreateUser(user User) (Token, error, int) {
 
 
 	if user.Email == "" || user.UserName == "" || user.Password == "" {
-		return Token{}, errors.New("make sure all the fields are filled"), 400
+		return Token{}, 400, errors.New("make sure all the fields are filled")
 	}
 	valid := IsEmailValid(user.Email)
 
 	collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&dbUser)
 	if dbUser.Email == user.Email {
-		return Token{}, errors.New("user already exists"), 409
+		return Token{}, 409, errors.New("user already exists")
 	}
 
 	
 	if !valid {
-		return Token{}, errors.New("invalid email address"), 400
+		return Token{}, 400, errors.New("invalid email address")
 	}
 	
 	user.Password = Hasher([]byte(user.Password))
 	
 	token, err := GenerateToken(user)
 	if err != nil {
-		return token, err, 500
+		return token, 500, err
 	}
+
+	out, _ := os.Create(fmt.Sprintf("./profiles/%s.png", user.ID.Hex()))
+
+	_, err = io.Copy(out, user.ImageFile)
+
+	if err != nil {
+		return token, 500, errors.New("could not write your image file")
+	}
+
 	
 	_, err = collection.InsertOne(ctx, user)
 	if err != nil {
-		return Token{}, errors.New("could not create user"), 500
+		return Token{}, 500, errors.New("could not create user")
 	}
 
-	return token, nil, 201
+	return token, 201, nil
 }
 
 

@@ -13,7 +13,7 @@ import (
 
 
 
-func GetRelatedProductsToID(id, token string, limit int) (Response, error, int){
+func GetRelatedProductsToID(id, token string, limit int) (Response, int, error){
 	var start int = 0
 	var newtoken Token
 	var product Product
@@ -25,17 +25,17 @@ func GetRelatedProductsToID(id, token string, limit int) (Response, error, int){
 
 
 	if id == "" && token == "" {
-		return response, errors.New("make sure to provide an id or page token"), 400
+		return response, 400, errors.New("make sure to provide an id or page token")
 	}
 
 /// if token is provided by the client make all the fields are field from the token data
 	if len(token) > 1 {
 		myToken, err := FindToken(token)
 		if err != nil {
-			return response, err, 400
+			return response, 400, err
 		}
 		if myToken.Endpoint != "productID" {
-			return response, errors.New("wrong endpoint"), 400
+			return response, 400, errors.New("wrong endpoint")
 		}
 		start = myToken.start
 		id = myToken.ID
@@ -53,17 +53,17 @@ func GetRelatedProductsToID(id, token string, limit int) (Response, error, int){
 
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil && token == ""{
-		return response, errors.New("invalid id"), 400
+		return response, 400, errors.New("invalid id")
 	}
 
 	err = collection.FindOne(ctx, bson.M{"_id": objectID}).Decode(&product)
 	if err != nil {
-		return response, fmt.Errorf("could not find a product with the id: %s", id), 404
+		return response, 404, fmt.Errorf("could not find a product with the id: %s", id)
 	}
 
 	cursor, err := collection.Find(ctx, bson.M{"department": product.Department})
 	if err != nil {
-		return response, errors.New("could not find products related to this product"), 404
+		return response, 404, errors.New("could not find products related to this product")
 	}
 
 	defer cursor.Close(ctx)
@@ -97,7 +97,7 @@ func GetRelatedProductsToID(id, token string, limit int) (Response, error, int){
 		RemoveTok(token)
 	}
 
-	return response, nil, 200
+	return response, 200, nil
 }
 
 

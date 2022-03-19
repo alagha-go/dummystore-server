@@ -28,7 +28,7 @@ func GetProducts(res http.ResponseWriter, req *http.Request) {
 	}else {
 		limit = -1
 	}
-	data, err, status := p.GetProducts(limit, token)
+	data, status, err := p.GetProducts(limit, token)
 	res.WriteHeader(status)
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
@@ -71,7 +71,7 @@ func GetRelatedProducts(res http.ResponseWriter, req *http.Request) {
 		limit = -1
 	}
 
-	data, err, status := p.GetRelatedProductsToID(id, token, limit)
+	data, status, err := p.GetRelatedProductsToID(id, token, limit)
 	res.WriteHeader(status)
 	if err != nil {
 		encoder := json.NewEncoder(res)

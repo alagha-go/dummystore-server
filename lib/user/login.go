@@ -10,7 +10,7 @@ import (
 )
 
 
-func Login(user User) (Token, error, int) {
+func Login(user User) (Token, int, error) {
 	var dbUser User
 
 	ctx := context.Background()
@@ -18,18 +18,18 @@ func Login(user User) (Token, error, int) {
 
 	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&dbUser)
 	if err != nil {
-		return Token{}, fmt.Errorf("user does not exist"), 404
+		return Token{}, 404, fmt.Errorf("user does not exist")
 	}
 
 	valid := CompareHash(user.Password, dbUser.Password)
 	if !valid {
-		return Token{}, errors.New("wrong Password"), 401
+		return Token{}, 401, errors.New("wrong Password")
 	}
 
 	token, err := GenerateToken(dbUser)
 	if err != nil {
-		return token, err, 500
+		return token, 500, err
 	}
 
-	return token, nil, 200
+	return token, 200, nil
 }

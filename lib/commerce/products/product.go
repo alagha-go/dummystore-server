@@ -18,34 +18,34 @@ type UpdateResponse struct {
 }
 
 
-func GetProductByID(id string) (Product, error, int) {
+func GetProductByID(id string) (Product, int, error) {
 	var product Product
 	collection := v.Client.Database("Dummystore").Collection("Products")
 	ctx := context.Background()
 
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return product, errors.New("invalid id"), 400
+		return product, 400, errors.New("invalid id")
 	}
 
 	err = collection.FindOne(ctx, bson.M{"_id": objectID}).Decode(&product)
 	if err != nil {
-		return product, fmt.Errorf("could not find a product with the id %s", id), 404
+		return product, 404, fmt.Errorf("could not find a product with the id %s", id) 
 	}
 
-	return product, nil, 200
+	return product, 200, nil
 }
 
 
-func GetProductByAsin(asin string) (Product, error, int) {
+func GetProductByAsin(asin string) (Product, int, error) {
 	var product Product
 	collection := v.Client.Database("Dummystore").Collection("Products")
 	ctx := context.Background()
 
 	err := collection.FindOne(ctx, bson.M{"asin": asin}).Decode(&product)
 	if err != nil {
-		return product,fmt.Errorf("could not find a product with the id %s", asin), 404
+		return product, 404, fmt.Errorf("could not find a product with the id %s", asin)
 	}
 	
-	return product, nil, 200
+	return product, 200, nil
 }

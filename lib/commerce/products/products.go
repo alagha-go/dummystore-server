@@ -71,7 +71,7 @@ type Color struct {
 
 
 //// this function gets products as requested by the client
-func GetProducts(limit int, token string) (Response, error, int) {
+func GetProducts(limit int, token string) (Response, int, error) {
 	start := 0
 	var response Response
 	var products []Product
@@ -84,7 +84,7 @@ func GetProducts(limit int, token string) (Response, error, int) {
 /// get all the products from the database
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil{
-		return Response{}, errors.New(Databaseerror), 500
+		return Response{}, 500, errors.New(Databaseerror)
 	}
 		
 	defer cursor.Close(ctx)
@@ -134,7 +134,7 @@ func GetProducts(limit int, token string) (Response, error, int) {
 	tokens = append(tokens, newtoken)
 
 
-	return response, nil, 200
+	return response, 200, nil
 }
 
 

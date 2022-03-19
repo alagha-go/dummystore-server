@@ -17,7 +17,8 @@ func CreateUser(res http.ResponseWriter, req *http.Request) {
 	}
 	var user u.User
 	json.NewDecoder(req.Body).Decode(&user)
-	token, err, status := u.CreateUser(user)
+	user.ImageFile, _,  _ = req.FormFile("image") 
+	token, status, err := u.CreateUser(user)
 	if err != nil {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -44,7 +45,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	}
 	var user u.User
 	json.NewDecoder(req.Body).Decode(&user)
-	token, err, status := u.Login(user)
+	token, status, err := u.Login(user)
 	if err != nil {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -68,7 +69,7 @@ func GetUser(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(405)
 		return
 	}
-	user, err, status := VerifyUser(req)
+	user, status, err := VerifyUser(req)
 	res.WriteHeader(status)
 	if err != nil {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -84,7 +85,7 @@ func RefreshToken(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(405)
 		return
 	}
-	_, err, status := VerifyUser(req)
+	_, status, err := VerifyUser(req)
 	if err != nil {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -119,13 +120,13 @@ func DeleteAccount(res http.ResponseWriter, req *http.Request)   {
 		res.WriteHeader(405)
 		return
 	}
-	user, err, status := VerifyUser(req)
+	user, status, err := VerifyUser(req)
 	if err != nil && status != 401{
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
 		return
 	}
-	deleted, err, status := u.DeleteUser(user, true)
+	deleted, status, err := u.DeleteUser(user, true)
 	res.WriteHeader(status)
 	if !deleted {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -147,7 +148,7 @@ func DeleteUser(res http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(res).Encode(Error{Error: "invalid json"})
 	}
 
-	deleted, err, status := u.DeleteUser(user, false)
+	deleted, status, err := u.DeleteUser(user, false)
 	res.WriteHeader(status)
 	if !deleted {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -157,21 +158,21 @@ func DeleteUser(res http.ResponseWriter, req *http.Request) {
 }
 
 
-func VerifyUser(req *http.Request) (u.User, error, int) {
+func VerifyUser(req *http.Request) (u.User, int, error) {
 	var User u.User
 	token, err := GetAuth(req)
 	if err != nil {
-		return User, errors.New("make sure to provide Authorization token"), 401
+		return User, 401, errors.New("make sure to provide Authorization token")
 	}
 	valid, user := u.ValidateToken(token)
 	if !valid {
-		return User, errors.New("provide a valid token"), 401
+		return User, 401, errors.New("provide a valid token")
 	}
 	data, _ := json.Marshal(user)
 	json.Unmarshal(data, &User)
 	exist := u.CheckIfUserExists(User.ID)
 	if !exist {
-		return User, errors.New("User does not exist"), 404
+		return User, 404, errors.New("User does not exist")
 	}
-	return User, nil, 200
+	return User, 200, nil
 }
