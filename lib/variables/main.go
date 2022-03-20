@@ -2,7 +2,6 @@ package variables
 
 import (
 	"errors"
-	"net/http"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
