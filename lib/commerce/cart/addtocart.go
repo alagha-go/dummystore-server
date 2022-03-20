@@ -4,8 +4,6 @@ import (
 	"context"
 	"dummystore/lib/commerce/products"
 	v "dummystore/lib/variables"
-	"errors"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -32,21 +30,21 @@ func AddProductToCart(userID, productID primitive.ObjectID, quantity int) (Cart,
 	collection := v.Client.Database("Dummystore").Collection("Cart")
 	exist := ProductExists(productID)
 	if !exist {
-		return cart, 404, fmt.Errorf("product with the id: %s does not exist", productID.Hex())
+		return cart, 404, v.ProductDoesNotExist
 	}
 
 	err := collection.FindOne(ctx, bson.M{"user_id": cart.UserID, "product_id": cart.ProductID}).Decode(&cartexist)
 	if err == nil {
 		err := UpdateCart(cartexist.ID, quantity)
 		if err != nil {
-			return cart, 500, fmt.Errorf("product with the id: %s does not exist", productID.Hex())
+			return cart, 500, v.ProductDoesNotExist
 		}
 		return GetCart(cartexist.ID)
 	}
 
 	_, err = collection.InsertOne(ctx, cart)
 	if err != nil {
-		return cart, 500, errors.New("could not save product to the cart")
+		return cart, 500, v.CouldNotsaveData
 	}
 	return cart, 200, nil
 }
