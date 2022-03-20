@@ -1,0 +1,30 @@
+package cart
+
+import (
+	"context"
+	v "dummystore/lib/variables"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+
+
+func GetMyOrders(userID primitive.ObjectID) ([]Cart, error) {
+	var carts []Cart
+	ctx := context.Background()
+	collection := v.Client.Database("Dummystore").Collection("Cart")
+	collection1 := v.Client.Database("Dummystore").Collection("Products")
+
+	cursor, err := collection.Find(ctx, bson.M{"user_id": userID, "ordered": true})
+	if err != nil {
+		return carts, v.DatabaseCouldNotRetrieve
+	}
+	defer cursor.Close(ctx)
+	cursor.All(ctx, &carts)
+	
+	for index, cart := range carts {
+		_ = collection1.FindOne(ctx, bson.M{"_id": cart.ProductID}).Decode(&carts[index].Product)
+	}
+	return carts, nil
+}
