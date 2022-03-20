@@ -18,11 +18,11 @@ type User struct {
 	ID										primitive.ObjectID								`json:"_id,omitempty" bson:"_id,omitempty"`
 	UserName								string											`json:"user_name,omitempty" bson:"user_name,omitempty"`
 	Email									string											`json:"email,omitempty" bson:"email,omitempty"`
-	ImageFile								multipart.File
+	ImageFile								multipart.File									`json:"image_file,omitempty" bson:"image_file,omitempty"`
 	Public									bool											`json:"public,omitempty" bson:"public,omitempty"`
 	RealPassword							string											`json:"real_password,omitempty" bson:"real_password,omitempty"`
 	Password								string											`json:"password,omitempty" bson:"password,omitempty"`
-	NewPassword								string											`json:"new_password,omitempty"`
+	NewPassword								string											`json:"new_password,omitempty" bson:new_password,omitempty"`
 }
 
 
@@ -64,6 +64,7 @@ func CreateUser(user User) (Token, int, error) {
 		return token, 500, v.CouldNotWriteImageFile
 	}
 
+	user.ImageFile = nil
 	
 	_, err = collection.InsertOne(ctx, user)
 	if err != nil {

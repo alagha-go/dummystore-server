@@ -16,9 +16,16 @@ func CreateUser(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(405)
 		return
 	}
+	req.ParseMultipartForm(0)
+	data := req.FormValue("data")
 	var user u.User
-	json.NewDecoder(req.Body).Decode(&user)
-	user.ImageFile, _,  _ = req.FormFile("image") 
+	err := json.Unmarshal([]byte(data), &user)
+	if err != nil {
+		res.WriteHeader(400)
+		json.NewEncoder(res).Encode(Error{Error: "invalid json data"})
+		return
+	}
+	user.ImageFile, _,  _ = req.FormFile("image")
 	token, status, err := u.CreateUser(user)
 	if err != nil {
 		res.WriteHeader(status)
@@ -133,7 +140,6 @@ func DeleteAccount(res http.ResponseWriter, req *http.Request)   {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
 		return
 	}
-	res.WriteHeader(http.StatusOK) 
 }
 
 func DeleteUser(res http.ResponseWriter, req *http.Request) {

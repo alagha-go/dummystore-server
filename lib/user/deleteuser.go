@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	v "dummystore/lib/variables"
+	"errors"
 	"fmt"
 	"os"
 
@@ -62,7 +63,10 @@ func DeleteUserData(userID primitive.ObjectID) error {
 		return v.CouldNotDeleteUserProducts
 	}
 
-	os.Remove(fmt.Sprintf("./profiles/%s.png", userID.Hex()))
+	err = os.Remove(fmt.Sprintf("./profiles/%s.png", userID.Hex()))
+	if err != nil {
+		return errors.New("could not delete user's profile image")
+	}
 
 	_, err = collection1.DeleteMany(ctx, bson.M{"user_id": userID})
 	if err != nil {
