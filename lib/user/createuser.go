@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	v "dummystore/lib/variables"
-	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -36,18 +35,18 @@ func CreateUser(user User) (Token, int, error) {
 
 
 	if user.Email == "" || user.UserName == "" || user.Password == "" {
-		return Token{}, 400, errors.New("make sure all the fields are filled")
+		return Token{}, 400, v.EmptyFields
 	}
 	valid := IsEmailValid(user.Email)
 
 	collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&dbUser)
 	if dbUser.Email == user.Email {
-		return Token{}, 409, errors.New("user already exists")
+		return Token{}, 409, v.UserExists
 	}
 
 	
 	if !valid {
-		return Token{}, 400, errors.New("invalid email address")
+		return Token{}, 400, v.InvalidEmail
 	}
 	
 	user.Password = Hasher([]byte(user.Password))
@@ -62,13 +61,13 @@ func CreateUser(user User) (Token, int, error) {
 	_, err = io.Copy(out, user.ImageFile)
 
 	if err != nil {
-		return token, 500, errors.New("could not write your image file")
+		return token, 500, v.CouldNotWriteImageFile
 	}
 
 	
 	_, err = collection.InsertOne(ctx, user)
 	if err != nil {
-		return Token{}, 500, errors.New("could not create user")
+		return Token{}, 500, v.DatabaseCouldNotSave
 	}
 
 	return token, 201, nil

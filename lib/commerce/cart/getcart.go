@@ -3,7 +3,6 @@ package cart
 import (
 	"context"
 	v "dummystore/lib/variables"
-	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -20,7 +19,7 @@ func GetMyCarts(userID primitive.ObjectID) ([]Cart, error) {
 
 	cursor, err := collection.Find(ctx, bson.M{"user_id": userID})
 	if err != nil {
-		return carts, errors.New("could not retrieve your cart")
+		return carts, v.DatabaseCouldNotRetrieve
 	}
 	defer cursor.Close(ctx)
 	cursor.All(ctx, &carts)

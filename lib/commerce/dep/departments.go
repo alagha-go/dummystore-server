@@ -3,7 +3,6 @@ package dep
 import (
 	"context"
 	v "dummystore/lib/variables"
-	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -53,7 +52,7 @@ func GetAllDepartments() ([]Department, int, error){
 
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil{
-		return nil, 500, errors.New(Databaseerror)
+		return nil, 500, v.DatabaseCouldNotRetrieve
 	}
 		
 	defer cursor.Close(ctx)

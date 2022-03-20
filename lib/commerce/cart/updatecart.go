@@ -3,7 +3,6 @@ package cart
 import (
 	"context"
 	v "dummystore/lib/variables"
-	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -31,7 +30,7 @@ func UpdateCart(id primitive.ObjectID, quantity int) error {
 
 	_, err := collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return errors.New("could not increase product quantity")
+		return v.CouldNotUpdateData
 	}
 	return nil
 }

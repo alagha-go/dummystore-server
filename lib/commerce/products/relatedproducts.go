@@ -4,7 +4,6 @@ import (
 	"context"
 	v "dummystore/lib/variables"
 	"errors"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -58,12 +57,12 @@ func GetRelatedProductsToID(id, token string, limit int) (Response, int, error){
 
 	err = collection.FindOne(ctx, bson.M{"_id": objectID}).Decode(&product)
 	if err != nil {
-		return response, 404, fmt.Errorf("could not find a product with the id: %s", id)
+		return response, 404, v.ProductDoesNotExist
 	}
 
 	cursor, err := collection.Find(ctx, bson.M{"department": product.Department})
 	if err != nil {
-		return response, 404, errors.New("could not find products related to this product")
+		return response, 404, v.NoRelatedProducts
 	}
 
 	defer cursor.Close(ctx)
@@ -109,7 +108,7 @@ func FindToken(token string) (Token, error) {
 			return newToken, nil
 		}
 	}
-	return newToken, errors.New("invalid token")
+	return newToken, v.InvalidAuthorization
 }
 
 

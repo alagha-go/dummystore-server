@@ -3,7 +3,7 @@ package user
 import (
 	"encoding/json"
 	"errors"
-
+	v "dummystore/lib/variables"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -78,13 +78,13 @@ func RefreshToken(token string) (Token, error) {
 	var claims Claims
 	valid, data := ValidateToken(token, true)
 	if !valid {
-		return Token{}, errors.New("invalid Authorization token")
+		return Token{}, v.InvalidAuthorization
 	}
 	jsondata, _ := json.Marshal(data)
 	json.Unmarshal(jsondata, &claims)
 
 	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 24 * time.Hour {
-		return Token{}, errors.New("token cannot be refreshed at this time")
+		return Token{}, v.TokenUnrefreshable
 	}
 	user.ID = claims.ID
 	user.Email = claims.Email

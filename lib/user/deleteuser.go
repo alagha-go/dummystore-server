@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	v "dummystore/lib/variables"
-	"errors"
 	"fmt"
 	"os"
 
@@ -23,20 +22,20 @@ func DeleteUser(user User, authorized bool) (bool, int, error) {
 		}
 		_, err = collection.DeleteOne(ctx, bson.M{"email": user.Email})
 		if err != nil {
-			return false, 500, errors.New("could not delete user")
+			return false, 500, v.CouldNotDeleteUser
 		}
 		return true, 200, nil
 	}
 	
 	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&dbUser)
 	if err != nil {
-		return false, 404, errors.New("user does not exist")
+		return false, 404, v.UserDoesNotExist
 	}
 	
 	valid := CompareHash(user.Password, dbUser.Password)
 
 	if !valid {
-		return false, 401, errors.New("Unauthorized")
+		return false, 401, v.UserUnAuthorized
 	}
 
 	err = DeleteUserData(dbUser.ID)
@@ -46,7 +45,7 @@ func DeleteUser(user User, authorized bool) (bool, int, error) {
 
 	_, err = collection.DeleteOne(ctx, bson.M{"email": user.Email})
 	if err != nil {
-		return false, 500, errors.New("could not delete user")
+		return false, 500, v.CouldNotDeleteUser
 	}
 
 	return true, 200, nil
@@ -60,14 +59,14 @@ func DeleteUserData(userID primitive.ObjectID) error {
 
 	_, err := collection.DeleteMany(ctx, bson.M{"owner_id": userID})
 	if err != nil {
-		return errors.New("could not delete products")
+		return v.CouldNotDeleteUserProducts
 	}
 
 	os.Remove(fmt.Sprintf("./profiles/%s.png", userID.Hex()))
 
 	_, err = collection1.DeleteMany(ctx, bson.M{"user_id": userID})
 	if err != nil {
-		return	errors.New("could not delet products in your cart")
+		return	v.CouldNotDeleteUsersCart
 	}
 	return nil
 }

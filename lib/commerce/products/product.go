@@ -2,7 +2,6 @@ package products
 
 import (
 	"context"
-	"fmt"
 	v "dummystore/lib/variables"
 	"errors"
 
@@ -30,7 +29,7 @@ func GetProductByID(id string) (Product, int, error) {
 
 	err = collection.FindOne(ctx, bson.M{"_id": objectID}).Decode(&product)
 	if err != nil {
-		return product, 404, fmt.Errorf("could not find a product with the id %s", id) 
+		return product, 404, v.ProductDoesNotExist
 	}
 
 	return product, 200, nil
@@ -44,7 +43,7 @@ func GetProductByAsin(asin string) (Product, int, error) {
 
 	err := collection.FindOne(ctx, bson.M{"asin": asin}).Decode(&product)
 	if err != nil {
-		return product, 404, fmt.Errorf("could not find a product with the id %s", asin)
+		return product, 404, v.ProductDoesNotExist
 	}
 	
 	return product, 200, nil

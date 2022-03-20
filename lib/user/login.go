@@ -3,8 +3,6 @@ package user
 import (
 	"context"
 	v "dummystore/lib/variables"
-	"errors"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -18,12 +16,12 @@ func Login(user User) (Token, int, error) {
 
 	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&dbUser)
 	if err != nil {
-		return Token{}, 404, fmt.Errorf("user does not exist")
+		return Token{}, 404, v.UserDoesNotExist
 	}
 
 	valid := CompareHash(user.Password, dbUser.Password)
 	if !valid {
-		return Token{}, 401, errors.New("wrong Password")
+		return Token{}, 401, v.WrongPassword
 	}
 
 	token, err := GenerateToken(dbUser)

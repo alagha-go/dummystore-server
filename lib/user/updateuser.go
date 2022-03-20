@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	v "dummystore/lib/variables"
-	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,7 +15,7 @@ func UpdateUser(user User) (User, int, error) {
 	collection := v.Client.Database("Dummystore").Collection("Users")
 	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&dbUser)
 	if err != nil {
-		return User{}, 404, errors.New("user does not exist")
+		return User{}, 404, v.UserDoesNotExist
 	}
 
 	if user.Public {
@@ -33,14 +32,14 @@ func UpdateUser(user User) (User, int, error) {
 	}else {
 		valid := IsEmailValid(user.Email)
 		if !valid {
-			return User{}, 400, errors.New("invalid email address")
+			return User{}, 400, v.InvalidEmail
 		}
 	}
 
 	if user.NewPassword != "" {
 		valid := CompareHash(user.Password, dbUser.Password)
 		if !valid {
-			return User{}, 401, errors.New("wrong password")
+			return User{}, 401, v.WrongPassword
 		}
 		user.Password = Hasher([]byte(user.NewPassword))
 		user.NewPassword = ""
@@ -53,7 +52,7 @@ func UpdateUser(user User) (User, int, error) {
 
 	_, err = collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return User{}, 500, errors.New("could not update user")
+		return User{}, 500, v.CouldNotUpdateUser
 	}
 
 	collection.FindOne(ctx, bson.M{"_id": user.ID}).Decode(&user)

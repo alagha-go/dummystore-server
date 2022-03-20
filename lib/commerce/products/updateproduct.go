@@ -3,7 +3,6 @@ package products
 import (
 	"context"
 	v "dummystore/lib/variables"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -17,7 +16,7 @@ func UpdateOneProduct(product Product) (UpdateResponse, int) {
 
 	err := collection.FindOne(ctx, bson.M{"_id": product.ID}).Decode(&oldProduct)
 	if err != nil {
-		return UpdateResponse{Product: product, Error: fmt.Errorf("could not find product")}, 404
+		return UpdateResponse{Product: product, Error: v.ProductDoesNotExist}, 404
 	}
 
 	if product.ASIN == "" {
@@ -64,7 +63,7 @@ func UpdateOneProduct(product Product) (UpdateResponse, int) {
 
 	_, err = collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return UpdateResponse{Product: product, Error: fmt.Errorf("could not update product")}, 500
+		return UpdateResponse{Product: product, Error: v.CouldNotUpdateData}, 500
 	}
 
 	return UpdateResponse{Product: product, Success: true}, 200
