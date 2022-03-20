@@ -178,3 +178,23 @@ func GetMyCart(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(200)
 	json.NewEncoder(res).Encode(carts)
 }
+
+
+func GetOrders(res http.ResponseWriter, req *http.Request) {
+	user, status, err := VerifyUser(req)
+	if err != nil {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+
+	carts, err := cart.GetMyOrders(user.ID)
+	if err != nil {
+		res.WriteHeader(500)
+		json.NewEncoder(res).Encode(Error{Error: "could not get your cart"})
+		return
+	}
+
+	res.WriteHeader(200)
+	json.NewEncoder(res).Encode(carts)
+}
