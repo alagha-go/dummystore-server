@@ -42,6 +42,7 @@ func CreateUser(res http.ResponseWriter, req *http.Request) {
 			Path: "/",
 		},
 	)
+	res.WriteHeader(status)
 	json.NewEncoder(res).Encode(token)
 }
 
@@ -166,6 +167,10 @@ func DeleteUser(res http.ResponseWriter, req *http.Request) {
 }
 
 func ProfileImage(res http.ResponseWriter, req *http.Request) {
+	if req.Method != "GET" {
+		res.WriteHeader(405)
+		return
+	}
 	user, status, err := VerifyUser(req)
 	if err != nil {
 		res.WriteHeader(status)
