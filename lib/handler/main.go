@@ -23,6 +23,7 @@ func MainHandler() {
 	router.HandleFunc("/api/cart/add", AddToCart)
 	router.HandleFunc("/api/cart/update", UpdateCart)
 	router.HandleFunc("/api/cart", GetMyCart)
+	router.HandleFunc("/api/profile", ProfileImage)
 	router.HandleFunc("/api/cart/delete", DeleteCart)
 	router.HandleFunc("/api/product/update", UpdateOneProduct)
 	router.HandleFunc("/api/related-products", GetRelatedProducts)

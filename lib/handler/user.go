@@ -4,6 +4,7 @@ import (
 	u "dummystore/lib/user"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -155,6 +156,17 @@ func DeleteUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	res.WriteHeader(http.StatusOK) 
+}
+
+func ProfileImage(res http.ResponseWriter, req *http.Request) {
+	user, status, err := VerifyUser(req)
+	if err != nil {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+
+	http.ServeFile(res, req, fmt.Sprintf("./profiles/%s.png", user.ID.Hex()))
 }
 
 
