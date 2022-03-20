@@ -2,6 +2,7 @@ package handler
 
 import (
 	u "dummystore/lib/user"
+	v "dummystore/lib/variables"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -190,7 +191,7 @@ func VerifyUser(req *http.Request) (u.User, int, error) {
 	json.Unmarshal(data, &User)
 	exist := u.CheckIfUserExists(User.ID)
 	if !exist {
-		return User, 404, errors.New("User does not exist")
+		return User, 404, v.UserDoesNotExist
 	}
 	return User, 200, nil
 }
