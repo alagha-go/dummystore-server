@@ -35,8 +35,3 @@ var (
 	CouldNotUpdateData = errors.New("could not update data")
 	NoRelatedProducts = errors.New("could not find products related to this one")
 )
-
-
-func SetErrorHeader(err error, res *http.ResponseWriter) {
-
-}
