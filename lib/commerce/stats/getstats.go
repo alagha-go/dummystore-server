@@ -9,7 +9,7 @@ import (
 )
 
 type Statistics struct {
-	OwnerID										primitive.ObjectID					`json:"_id,omitempty" bson:"_id,omitempty"`
+	OwnerID										primitive.ObjectID					`json:"owner_id,omitempty" bson:"owner_id,omitempty"`
 	TotalSales									float64								`json:"total_sales,omitempty" bson:"total_sales,omitempty"`
 	TotalProducts								int									`json:"total_products,omitempty" bson:"total_products"`
 	TotalOrders									int									`json:"total_orders,omitempty" bson:"total_orders,omitempty"`
