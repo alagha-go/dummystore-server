@@ -68,6 +68,8 @@ func AddOrder(userID primitive.ObjectID, order Order) (int, error) {
 		}
 	}
 
+	stats.TotalOrders++
+
 	filter := bson.M{"_id": bson.M{"$eq": stats.OwnerID}}
 	update := bson.M{"$set": stats}
 
