@@ -4,6 +4,7 @@ import (
 	"context"
 	"dummystore/lib/commerce/products"
 	v "dummystore/lib/variables"
+	"os/user"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,8 +17,8 @@ type Cart struct {
 	Quantity									int												`json:"quantity,omitempty" bson:"quantity,omitempty"`
 	ProductID									primitive.ObjectID								`json:"product_id,omitempty" bson:"product_id,omitempty"`
 	UserID										primitive.ObjectID								`json:"user_id,omitempty" bson:"user_id,omitempty"`
-	User										interface{}										`json:"user,omitempty" bson:"user,omitempty"`
-	Product										interface{}										`json:"product,omitempty" bson:"product,omitempty"`
+	User										*user.User										`json:"user,omitempty" bson:"user,omitempty"`
+	Product										*products.Product								`json:"product,omitempty" bson:"product,omitempty"`
 	Ordered										bool											`json:"ordered,omitempty" bson:"ordered,omitempty"`
 	TimeOrdered									time.Time										`json:"time_ordered,omitempty" bson:"time_ordered,omitempty"`
 	Paid										bool											`json:"paid,omitempty" bson:"paid,omitempty"`
