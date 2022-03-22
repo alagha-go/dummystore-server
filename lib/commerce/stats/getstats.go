@@ -3,6 +3,7 @@ package stats
 import (
 	"context"
 	v "dummystore/lib/variables"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -33,8 +34,7 @@ type Month struct {
 }
 
 type Day struct {
-	Index										int									`json:"index,omitempty" bson:"index,omitempty"`
-	Day											string								`json:"day,omitempty" bson:"day,omitempty"`
+	Day											int									`json:"day,omitempty" bson:"day,omitempty"`
 	Orders										[]Order								`json:"orders,omitempty" bson:"orders,omitempty"`
 }
 
@@ -42,7 +42,8 @@ type Order struct {
 	ProductID									primitive.ObjectID					`json:"product_id,omitempty" bson:"product_id,omitempty"`
 	Paid										bool								`json:"paid,omitempty" bson:"paid,omitempty"`
 	Quantity									int									`json:"quantity,omitempty" bson:"quantity,omitempty"`
-	BuyserID									primitive.ObjectID					`json:"buyer_id,omitempty" bson:"buyer_id,omitempty"`
+	TimeOrdered									time.Time							`json:"time_ordered,omitempty" bson:"time_ordered,omitempty"`
+	CartID										primitive.ObjectID					`json:"cart_id,omitempty" bson:"cart_id,omitempty"`
 }
 
 
