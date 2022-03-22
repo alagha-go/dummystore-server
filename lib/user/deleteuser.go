@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"dummystore/lib/commerce/stats"
 	v "dummystore/lib/variables"
 	"errors"
 	"fmt"
@@ -66,6 +67,11 @@ func DeleteUserData(userID primitive.ObjectID) error {
 	err = os.Remove(fmt.Sprintf("./profiles/%s.png", userID.Hex()))
 	if err != nil {
 		return errors.New("could not delete user's profile image")
+	}
+
+	err = stats.DeleteUserStats(userID)
+	if err != nil {
+		return err
 	}
 
 	_, err = collection1.DeleteMany(ctx, bson.M{"user_id": userID})
