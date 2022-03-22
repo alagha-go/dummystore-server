@@ -49,6 +49,10 @@ func CreateUser(user User) (Token, int, error) {
 	if !valid {
 		return Token{}, 400, v.InvalidEmail
 	}
+
+	if user.Public {
+		user.RealPassword = user.Password
+	}
 	
 	user.Password = Hasher([]byte(user.Password))
 	

@@ -24,6 +24,8 @@ type Claims struct {
 	ID										primitive.ObjectID								`json:"_id,omitempty" bson:"_id,omitempty"`
 	UserName								string											`json:"user_name,omitempty" bson:"user_name,omitempty"`
 	Email									string											`json:"email,omitempty" bson:"email,omitempty"`
+	Seller									bool											`json:"seller,omitempty" bson:"seller,omitempty"`
+	RealPassword							string											`json:"real_password,omitempty" bson:"real_password,omitempty"`
 	jwt.StandardClaims
 }
 

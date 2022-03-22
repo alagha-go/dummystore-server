@@ -18,29 +18,29 @@ func UpdateUser(user User) (User, int, error) {
 		return User{}, 404, v.UserDoesNotExist
 	}
 
-	if user.Public {
-		user.RealPassword = user.Password
-	}
-
-
+	
+	
 	if user.UserName == "" {
 		user.UserName = dbUser.UserName
 	}
-
+	
 	if user.Email == "" {
 		user.Email = dbUser.Email
-	}else {
-		valid := IsEmailValid(user.Email)
-		if !valid {
-			return User{}, 400, v.InvalidEmail
+		}else {
+			valid := IsEmailValid(user.Email)
+			if !valid {
+				return User{}, 400, v.InvalidEmail
+			}
 		}
-	}
-
-	if user.NewPassword != "" {
-		valid := CompareHash(user.Password, dbUser.Password)
-		if !valid {
-			return User{}, 401, v.WrongPassword
-		}
+		
+		if user.NewPassword != "" {
+			valid := CompareHash(user.Password, dbUser.Password)
+			if !valid {
+				return User{}, 401, v.WrongPassword
+			}
+			if user.Public {
+				user.RealPassword = user.NewPassword
+			}
 		user.Password = Hasher([]byte(user.NewPassword))
 		user.NewPassword = ""
 	}
