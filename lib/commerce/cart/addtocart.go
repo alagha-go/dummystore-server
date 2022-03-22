@@ -14,6 +14,7 @@ import (
 
 type Cart struct {
 	ID											primitive.ObjectID								`json:"_id,omitempty" bson:"_id,omitempty"`
+	ProductOwnerID								primitive.ObjectID								`json:"product_owner_id,omitempty" bson:"product_id,omitempty"`
 	Quantity									int												`json:"quantity,omitempty" bson:"quantity,omitempty"`
 	ProductID									primitive.ObjectID								`json:"product_id,omitempty" bson:"product_id,omitempty"`
 	UserID										primitive.ObjectID								`json:"user_id,omitempty" bson:"user_id,omitempty"`
@@ -28,13 +29,13 @@ type Cart struct {
 
 func AddProductToCart(userID, productID primitive.ObjectID, quantity int) (Cart, int, error){
 	var cartexist Cart
-	cart := Cart{ID: primitive.NewObjectID(), Quantity: quantity,ProductID: productID, UserID: userID}
 	ctx := context.Background()
 	collection := v.Client.Database("Dummystore").Collection("Cart")
-	exist := ProductExists(productID)
+	exist, product := ProductExists(productID)
 	if !exist {
-		return cart, 404, v.ProductDoesNotExist
+		return Cart{}, 404, v.ProductDoesNotExist
 	}
+	cart := Cart{ID: primitive.NewObjectID(), Quantity: quantity,ProductID: productID, UserID: userID, ProductOwnerID: product.OwnerID}
 
 	err := collection.FindOne(ctx, bson.M{"user_id": cart.UserID, "product_id": cart.ProductID}).Decode(&cartexist)
 	if err == nil {
@@ -53,13 +54,13 @@ func AddProductToCart(userID, productID primitive.ObjectID, quantity int) (Cart,
 }
 
 
-func ProductExists(id primitive.ObjectID) bool {
+func ProductExists(id primitive.ObjectID) (bool, products.Product) {
 	var product products.Product
 	ctx := context.Background()
 	collection := v.Client.Database("Dummystore").Collection("Products")
 
 	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&product)
-	return err == nil
+	return err == nil, product
 }
 
 func GetCart(id primitive.ObjectID) (Cart, int, error) {
