@@ -21,6 +21,7 @@ type Cart struct {
 	Ordered										bool											`json:"ordered,omitempty" bson:"ordered,omitempty"`
 	TimeOrdered									time.Time										`json:"time_ordered,omitempty" bson:"time_ordered,omitempty"`
 	Paid										bool											`json:"paid,omitempty" bson:"paid,omitempty"`
+	Delivered									bool										   	`json:"delivered,omitempty" bson:"delivered,omitempty"`
 }
 
 
