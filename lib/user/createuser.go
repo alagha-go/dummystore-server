@@ -20,9 +20,10 @@ type User struct {
 	Email									string											`json:"email,omitempty" bson:"email,omitempty"`
 	ImageFile								multipart.File									`json:"image_file,omitempty" bson:"image_file,omitempty"`
 	Public									bool											`json:"public,omitempty" bson:"public,omitempty"`
+	Seller									bool											`json:"seller,omitempty" bson:"seller,omitempty"`
 	RealPassword							string											`json:"real_password,omitempty" bson:"real_password,omitempty"`
 	Password								string											`json:"password,omitempty" bson:"password,omitempty"`
-	NewPassword								string											`json:"new_password,omitempty" bson:new_password,omitempty"`
+	NewPassword								string											`json:"new_password,omitempty" bson:"new_password,omitempty"`
 }
 
 
