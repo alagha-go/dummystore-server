@@ -4,6 +4,7 @@ import (
 	"context"
 	"dummystore/lib/commerce/products"
 	v "dummystore/lib/variables"
+	"errors"
 	"os/user"
 	"time"
 
@@ -34,6 +35,9 @@ func AddProductToCart(userID, productID primitive.ObjectID, quantity int, ordere
 	exist, product := ProductExists(productID)
 	if !exist {
 		return Cart{}, 404, v.ProductDoesNotExist
+	}
+	if ordered && product.OwnerID.Hex() == "000000000000000000000000" {
+		return Cart{}, 400, errors.New("product has no owner")
 	}
 	cart := Cart{ID: primitive.NewObjectID(), Quantity: quantity,ProductID: productID, UserID: userID, ProductOwnerID: product.OwnerID}
 
