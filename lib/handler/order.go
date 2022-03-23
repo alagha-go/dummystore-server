@@ -81,3 +81,45 @@ func OrderProduct(res http.ResponseWriter, req *http.Request) {
 	}
 	res.WriteHeader(200)
 }
+
+
+func GetMyOrders(res http.ResponseWriter, req *http.Request) {
+	if req.Method != "GET" {
+		res.WriteHeader(405)
+		return
+	}
+	user, status, err := VerifyUser(req)
+	if err != nil {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+
+	carts, err := cart.GetMyOrders(user.ID)
+	if err != nil {
+		res.WriteHeader(500)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+	json.NewEncoder(res).Encode(carts)
+}
+
+func GetMyOrderedProducts(res http.ResponseWriter, req *http.Request) {
+	if req.Method != "GET" {
+		res.WriteHeader(405)
+		return
+	}
+	user, status, err := VerifyUser(req)
+	if err != nil {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+	carts, err := stats.GetAllMyOrders(user.ID)
+	if err != nil {
+		res.WriteHeader(500)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+	json.NewEncoder(res).Encode(carts)
+}
