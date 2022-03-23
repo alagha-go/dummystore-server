@@ -14,6 +14,10 @@ func GetMyStats(res http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
 		return
 	}
+	if !user.Seller {
+		json.NewEncoder(res).Encode(nil)
+		return
+	}
 	stats := stats.GetMyStatistics(user.ID)
 	res.WriteHeader(status)
 	json.NewEncoder(res).Encode(stats)
