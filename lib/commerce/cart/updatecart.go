@@ -10,7 +10,7 @@ import (
 
 
 
-func UpdateCart(id primitive.ObjectID, quantity int) error {
+func UpdateCart(id primitive.ObjectID, quantity int, ordered bool) error {
 	var cart Cart
 	ctx := context.Background()
 	collection := v.Client.Database("Dummystore").Collection("Cart")
@@ -23,9 +23,14 @@ func UpdateCart(id primitive.ObjectID, quantity int) error {
 		quantity = 1
 	}
 
+	if cart.Ordered && !ordered{
+		ordered = cart.Ordered
+	}
+
 	filter := bson.M{"_id": bson.M{"$eq": id}}
 	update := bson.M{"$set": bson.M{
 		"quantity": quantity,
+		"ordered": ordered,
 	}}
 
 	_, err := collection.UpdateOne(ctx, filter, update)

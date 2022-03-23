@@ -27,7 +27,7 @@ type Cart struct {
 }
 
 
-func AddProductToCart(userID, productID primitive.ObjectID, quantity int) (Cart, int, error){
+func AddProductToCart(userID, productID primitive.ObjectID, quantity int, ordered bool) (Cart, int, error) {
 	var cartexist Cart
 	ctx := context.Background()
 	collection := v.Client.Database("Dummystore").Collection("Cart")
@@ -37,15 +37,16 @@ func AddProductToCart(userID, productID primitive.ObjectID, quantity int) (Cart,
 	}
 	cart := Cart{ID: primitive.NewObjectID(), Quantity: quantity,ProductID: productID, UserID: userID, ProductOwnerID: product.OwnerID}
 
+	
 	err := collection.FindOne(ctx, bson.M{"user_id": cart.UserID, "product_id": cart.ProductID}).Decode(&cartexist)
 	if err == nil {
-		err := UpdateCart(cartexist.ID, quantity)
+		err := UpdateCart(cartexist.ID, quantity, ordered)
 		if err != nil {
 			return cart, 500, v.ProductDoesNotExist
 		}
 		return GetCart(cartexist.ID)
 	}
-
+	
 	_, err = collection.InsertOne(ctx, cart)
 	if err != nil {
 		return cart, 500, v.CouldNotsaveData
