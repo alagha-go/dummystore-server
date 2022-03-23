@@ -52,6 +52,7 @@ func GetMyStatistics(userID primitive.ObjectID) (Statistics){
 
 	if stats.OwnerID.Hex() == "000000000000000000000000"{
 		CreateNewStatistics(userID)
+		return GetMyStatistics(userID)
 	}
 
 	return stats
