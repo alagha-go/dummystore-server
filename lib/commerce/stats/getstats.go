@@ -50,5 +50,9 @@ func GetMyStatistics(userID primitive.ObjectID) (Statistics){
 
 	collection.FindOne(ctx,   bson.M{"_id": userID}).Decode(&stats)
 
+	if stats.OwnerID.Hex() == "000000000000000000000000" {
+		CreateNewStatistics(userID)
+	}
+
 	return stats
 }
