@@ -3,6 +3,7 @@ package cart
 import (
 	"context"
 	v "dummystore/lib/variables"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -21,6 +22,10 @@ func UpdateCart(id primitive.ObjectID, quantity int, ordered bool) error {
 
 	if quantity <= 0 {
 		quantity = 1
+	}
+
+	if !cart.Ordered && ordered{
+		cart.TimeOrdered = time.Now()
 	}
 
 	if cart.Ordered && !ordered{

@@ -37,6 +37,9 @@ func AddProductToCart(userID, productID primitive.ObjectID, quantity int, ordere
 	}
 	cart := Cart{ID: primitive.NewObjectID(), Quantity: quantity,ProductID: productID, UserID: userID, ProductOwnerID: product.OwnerID}
 
+	if ordered {
+		cart.TimeOrdered = time.Now()
+	}
 	
 	err := collection.FindOne(ctx, bson.M{"user_id": cart.UserID, "product_id": cart.ProductID}).Decode(&cartexist)
 	if err == nil {
