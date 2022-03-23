@@ -44,6 +44,7 @@ func GetProducts(res http.ResponseWriter, req *http.Request) {
 
 
 func GetAllMyProducts(res http.ResponseWriter, req *http.Request) {
+	res.Header().Add("content-type", "application/json")
 	if req.Method != "GET" {
 		res.WriteHeader(405)
 		return
