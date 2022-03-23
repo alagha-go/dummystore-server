@@ -42,7 +42,7 @@ func GetProductByAttribute(res http.ResponseWriter, req *http.Request) {
 
 func UpdateOneProduct(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("content-type", "application/json")
-	if req.Method != "PUT" || req.Method != "UPDATE" {
+	if req.Method != "PUT" && req.Method != "UPDATE" {
 		res.WriteHeader(http.StatusBadGateway)
 		return
 	}

@@ -69,6 +69,11 @@ func ValidateToken(tokenstring string, refresh  ...bool) (bool, interface{}){
 		user.ID = claims.ID
 		user.Email = claims.Email
 		user.UserName = claims.UserName
+		user.NewPassword = claims.RealPassword
+		user.Seller = claims.Seller
+		if len(user.RealPassword) > 0 {
+			user.Public = true
+		}
 
 		return true, user
 	}
@@ -85,7 +90,7 @@ func RefreshToken(token string) (Token, error) {
 	jsondata, _ := json.Marshal(data)
 	json.Unmarshal(jsondata, &claims)
 
-	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 24 * time.Hour {
+	if time.Until(time.Unix(claims.ExpiresAt, 0)) > 24 * time.Hour {
 		return Token{}, v.TokenUnrefreshable
 	}
 	user.ID = claims.ID
