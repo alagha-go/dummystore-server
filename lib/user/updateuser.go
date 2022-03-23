@@ -38,7 +38,7 @@ func UpdateUser(user User) (User, int, error) {
 			if !valid {
 				return User{}, 401, v.WrongPassword
 			}
-			if user.Public {
+			if dbUser.Public {
 				user.RealPassword = user.NewPassword
 			}
 		user.Password = Hasher([]byte(user.NewPassword))
