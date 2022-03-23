@@ -71,7 +71,7 @@ func ValidateToken(tokenstring string, refresh  ...bool) (bool, interface{}){
 		user.ID = claims.ID
 		user.Email = claims.Email
 		user.UserName = claims.UserName
-		user.NewPassword = claims.RealPassword
+		user.RealPassword = claims.RealPassword
 		user.Seller = claims.Seller
 		if len(user.RealPassword) > 0 {
 			user.Public = true
