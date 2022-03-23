@@ -61,11 +61,11 @@ func OrderProduct(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	id := req.URL.Query().Get("id")
 	quantity, err := strconv.Atoi(req.URL.Query().Get("quantity"))
 	if err != nil {
 		quantity = 1
 	}
+	id := req.URL.Query().Get("id")
 	ID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		res.WriteHeader(400)
