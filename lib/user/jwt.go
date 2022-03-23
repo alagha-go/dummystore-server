@@ -35,6 +35,8 @@ func GenerateToken(user User) (Token, error) {
 		ID: user.ID,
 		UserName: user.UserName,
 		Email: user.Email,
+		Seller: user.Seller,
+		RealPassword: user.RealPassword,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expires.Unix(),
 		},
@@ -96,6 +98,8 @@ func RefreshToken(token string) (Token, error) {
 	user.ID = claims.ID
 	user.Email = claims.Email
 	user.UserName = claims.UserName
+	user.NewPassword = claims.RealPassword
+	user.Seller = claims.Seller
 	return GenerateToken(user)
 }
 
