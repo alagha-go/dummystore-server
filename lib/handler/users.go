@@ -12,6 +12,10 @@ import (
 
 
 func GetProfilePicture(res http.ResponseWriter, req *http.Request) {
+	if req.Method != "GET" {
+		res.WriteHeader(405)
+		return
+	}
 	params := mux.Vars(req)
 	id := params["id"]
 

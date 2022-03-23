@@ -11,11 +11,11 @@ import (
 
 func GetProductByAttribute(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("content-type", "application/json")
-	var status int
 	if req.Method != "GET" {
-		res.WriteHeader(http.StatusBadGateway)
+		res.WriteHeader(405)
 		return
 	}
+	var status int
 	var data p.Product
 	var err error
 	id := req.URL.Query().Get("id")
@@ -45,7 +45,7 @@ func GetProductByAttribute(res http.ResponseWriter, req *http.Request) {
 func UpdateOneProduct(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("content-type", "application/json")
 	if req.Method != "PUT" && req.Method != "UPDATE" {
-		res.WriteHeader(http.StatusBadGateway)
+		res.WriteHeader(405)
 		return
 	}
 	var product p.Product
@@ -65,7 +65,7 @@ func UpdateOneProduct(res http.ResponseWriter, req *http.Request) {
 func AddNewProduct(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("content-type", "application/json")
 	if req.Method != "POST" {
-		res.WriteHeader(http.StatusBadGateway)
+		res.WriteHeader(405)
 		return
 	}
 	user, status, err := VerifyUser(req)

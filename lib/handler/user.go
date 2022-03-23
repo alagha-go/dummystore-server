@@ -171,7 +171,7 @@ func DeleteUser(res http.ResponseWriter, req *http.Request) {
 func UpdateUser(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("content-type", "application/json")
 	if req.Method != "PUT" && req.Method != "UPDATE" {
-		res.WriteHeader(http.StatusBadGateway)
+		res.WriteHeader(405)
 		return
 	}
 	us, status, err := VerifyUser(req)

@@ -8,6 +8,10 @@ import (
 
 func GetMyStats(res http.ResponseWriter, req *http.Request) {
 	res.Header().Add("content-type", "application/json")
+	if req.Method != "GET" {
+		res.WriteHeader(405)
+		return
+	}
 	user, status, err := VerifyUser(req)
 	if err != nil {
 		res.WriteHeader(status)
