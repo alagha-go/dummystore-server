@@ -113,11 +113,13 @@ func RefreshToken(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	res.Header().Add("Authorization", newToken.Token)
 	http.SetCookie(res,
 		&http.Cookie{
 			Name: "Authorization",
 			Value: newToken.Token,
 			Expires: newToken.Expires,
+			Path: "/",
 		},
 	)
 	json.NewEncoder(res).Encode(newToken)
@@ -187,6 +189,21 @@ func UpdateUser(res http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
 		return
 	}
+	token, err := u.GenerateToken(user)
+	if err != nil {
+		res.WriteHeader(500)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+	res.Header().Add("Authorization", token.Token)
+	http.SetCookie(res,
+		&http.Cookie{
+			Name: "Authorization",
+			Value: token.Token,
+			Expires: token.Expires,
+			Path: "/",
+		},
+	)
 	res.WriteHeader(status)
 	json.NewEncoder(res).Encode(user)
 }
