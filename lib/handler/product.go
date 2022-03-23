@@ -74,6 +74,10 @@ func AddNewProduct(res http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
 		return
 	}
+	if !user.Seller {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: "user is not a seller"})
+	}
 	var product p.Product
 
 	err = json.NewDecoder(req.Body).Decode(&product)
@@ -107,6 +111,11 @@ func OwnProduct(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
 		return
+	}
+
+	if !user.Seller {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: "user is not a seller"})
 	}
 
 	id := req.URL.Query().Get("id")
