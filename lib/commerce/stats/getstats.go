@@ -2,6 +2,8 @@ package stats
 
 import (
 	"context"
+	"dummystore/lib/commerce/cart"
+	"dummystore/lib/commerce/products"
 	v "dummystore/lib/variables"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -45,8 +47,12 @@ type Order struct {
 
 func GetMyStatistics(userID primitive.ObjectID) (Statistics){
 	var stats Statistics
+	var products []products.Product
+	var carts	[]cart.Cart
 	ctx := context.Background()
 	collection := v.Client.Database("Dummystore").Collection("Statistics")
+	collection1 := v.Client.Database("Dummystore").Collection("Products")
+	collection2 := v.Client.Database("Dummystore").Collection("Cart")
 
 	collection.FindOne(ctx,   bson.M{"owner_id": userID}).Decode(&stats)
 
@@ -54,6 +60,24 @@ func GetMyStatistics(userID primitive.ObjectID) (Statistics){
 		CreateNewStatistics(userID)
 		return GetMyStatistics(userID)
 	}
+
+	cursor, _ := collection1.Find(ctx, bson.M{"owner_id": userID})
+	defer cursor.Close(ctx)
+	cursor.All(ctx, &products)
+	stats.TotalProducts = len(products)
+
+	cursor, _ = collection2.Find(ctx, bson.M{"product_owner_id": userID, "ordered": true, "paid": true})
+	cursor.All(ctx, &carts)
+	stats.PaidOrders = len(carts)
+
+	for _, Year := range stats.SaleStatistics.Years {
+		for _, Month := range Year.Months {
+			for _, Day := range Month.Days {
+				stats.TotalOrders+=len(Day.Orders)
+			}
+		}
+	}
+
 
 	return stats
 }
