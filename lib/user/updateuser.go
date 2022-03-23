@@ -17,7 +17,6 @@ func UpdateUser(user User) (User, int, error) {
 	if err != nil {
 		return User{}, 404, v.UserDoesNotExist
 	}
-
 	
 	
 	if user.UserName == "" {
@@ -38,12 +37,13 @@ func UpdateUser(user User) (User, int, error) {
 			if !valid {
 				return User{}, 401, v.WrongPassword
 			}
-			if dbUser.Public {
+			if dbUser.Public || user.Public {
 				user.RealPassword = user.NewPassword
 			}
 		user.Password = Hasher([]byte(user.NewPassword))
 		user.NewPassword = ""
 	}
+
 
 	user.ID = dbUser.ID
 
