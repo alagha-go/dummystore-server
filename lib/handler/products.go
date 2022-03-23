@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"dummystore/lib/commerce/products"
 	p "dummystore/lib/commerce/products"
 	"encoding/json"
 	"net/http"
@@ -56,7 +55,7 @@ func GetAllMyProducts(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	products, status, err := products.GetAllMyProducts(user.ID)
+	products, status, err := p.GetAllMyProducts(user.ID)
 	res.WriteHeader(status)
 	if err != nil {
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
