@@ -56,6 +56,7 @@ func UpdateUser(user User) (User, int, error) {
 	}
 
 	collection.FindOne(ctx, bson.M{"_id": user.ID}).Decode(&user)
+	user.Password = ""
 	return user, 200, nil
 }
 
