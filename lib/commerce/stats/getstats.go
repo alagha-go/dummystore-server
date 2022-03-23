@@ -48,9 +48,9 @@ func GetMyStatistics(userID primitive.ObjectID) (Statistics){
 	ctx := context.Background()
 	collection := v.Client.Database("Dummystore").Collection("Statistics")
 
-	collection.FindOne(ctx,   bson.M{"_id": userID}).Decode(&stats)
+	collection.FindOne(ctx,   bson.M{"owner_id": userID}).Decode(&stats)
 
-	if stats.OwnerID.Hex() == "000000000000000000000000" || stats.OwnerID.Hex() == ""{
+	if stats.OwnerID.Hex() == "000000000000000000000000"{
 		CreateNewStatistics(userID)
 	}
 
