@@ -14,6 +14,8 @@ func MainHandler() {
 	router.HandleFunc("/api/updates", GetUpdates)
 	router.HandleFunc("/api/products", GetProducts)
 	router.HandleFunc("/api/product", GetProductByAttribute)
+	router.HandleFunc("/api/product/add", AddNewProduct)
+	router.HandleFunc("/api/product/own", OwnProduct)
 	router.HandleFunc("/api/product/orders", GetMyOrderedProducts)
 	router.HandleFunc("/api/product/order", OrderProduct)
 	router.HandleFunc("/api/signup", CreateUser)
