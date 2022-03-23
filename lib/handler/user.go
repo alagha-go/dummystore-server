@@ -172,7 +172,7 @@ func UpdateUser(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(http.StatusBadGateway)
 		return
 	}
-	_, status, err := VerifyUser(req)
+	us, status, err := VerifyUser(req)
 	if err != nil {
 		res.WriteHeader(status)
 		json.NewEncoder(res).Encode(Error{Error: err.Error()})
@@ -180,6 +180,7 @@ func UpdateUser(res http.ResponseWriter, req *http.Request) {
 	}
 	var user u.User
 	json.NewDecoder(req.Body).Decode(&user)
+	user.ID = us.ID
 	user, status, err = u.UpdateUser(user)
 	if err != nil {
 		res.WriteHeader(status)

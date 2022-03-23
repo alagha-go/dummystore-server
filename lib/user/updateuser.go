@@ -13,7 +13,7 @@ func UpdateUser(user User) (User, int, error) {
 	var dbUser User
 	ctx := context.Background()
 	collection := v.Client.Database("Dummystore").Collection("Users")
-	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&dbUser)
+	err := collection.FindOne(ctx, bson.M{"_id": user.ID}).Decode(&dbUser)
 	if err != nil {
 		return User{}, 404, v.UserDoesNotExist
 	}
