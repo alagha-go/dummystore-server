@@ -1,7 +1,8 @@
 package handler
 
 import (
-	p"dummystore/lib/commerce/products"
+	"dummystore/lib/commerce/products"
+	p "dummystore/lib/commerce/products"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -40,6 +41,28 @@ func GetProducts(res http.ResponseWriter, req *http.Request) {
 	encoder := json.NewEncoder(res)
 	encoder.SetEscapeHTML(false)
 	encoder.Encode(data)
+}
+
+
+func GetAllMyProducts(res http.ResponseWriter, req *http.Request) {
+	if req.Method != "GET" {
+		res.WriteHeader(405)
+		return
+	}
+	user, status, err :=  VerifyUser(req)
+	if err != nil {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+
+	products, status, err := products.GetAllMyProducts(user.ID)
+	res.WriteHeader(status)
+	if err != nil {
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+	json.NewEncoder(res).Encode(products)
 }
 
 func GetUpdates(res http.ResponseWriter, req *http.Request) {
