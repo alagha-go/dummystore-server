@@ -166,6 +166,30 @@ func DeleteUser(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK) 
 }
 
+func UpdateUser(res http.ResponseWriter, req *http.Request) {
+	res.Header().Add("content-type", "application/json")
+	if req.Method != "PUT" && req.Method != "UPDATE" {
+		res.WriteHeader(http.StatusBadGateway)
+		return
+	}
+	_, status, err := VerifyUser(req)
+	if err != nil {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+	var user u.User
+	json.NewDecoder(req.Body).Decode(&user)
+	user, status, err = u.UpdateUser(user)
+	if err != nil {
+		res.WriteHeader(status)
+		json.NewEncoder(res).Encode(Error{Error: err.Error()})
+		return
+	}
+	res.WriteHeader(status)
+	json.NewEncoder(res).Encode(user)
+}
+
 func ProfileImage(res http.ResponseWriter, req *http.Request) {
 	if req.Method != "GET" {
 		res.WriteHeader(405)
