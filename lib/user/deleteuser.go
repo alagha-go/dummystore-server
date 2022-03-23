@@ -59,7 +59,7 @@ func DeleteUserData(userID primitive.ObjectID) error {
 	collection := v.Client.Database("Dummystore").Collection("Products")
 	collection1 := v.Client.Database("Dummystore").Collection("Cart")
 
-	_, err := collection.DeleteMany(ctx, bson.M{"owner_id": userID})
+	_, err := collection.DeleteMany(ctx, bson.M{"owner_id": userID, "new": true})
 	if err != nil {
 		return v.CouldNotDeleteUserProducts
 	}
@@ -78,5 +78,13 @@ func DeleteUserData(userID primitive.ObjectID) error {
 	if err != nil {
 		return	v.CouldNotDeleteUsersCart
 	}
+
+
+	filter := bson.M{"owner_id": bson.M{"$eq": userID}}
+	id, _ := primitive.ObjectIDFromHex("000000000000000000000000")
+	update := bson.M{"$set": bson.M{"owner_id": id}}
+
+	collection.UpdateMany(ctx, filter, update)
+
 	return nil
 }
