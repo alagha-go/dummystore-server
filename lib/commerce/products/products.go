@@ -139,6 +139,21 @@ func GetProducts(limit int, token string) (Response, int, error) {
 }
 
 
+func GetAllMyProducts(userID primitive.ObjectID) ([]Product, int, error) {
+	var products []Product
+	collection := v.Client.Database("Dummystore").Collection("Products")
+	ctx := context.Background()
+
+	cursor, err := collection.Find(ctx, bson.M{"owner_id": userID})
+	if err != nil {
+		return products, 404, v.ProductDoesNotExist
+	}
+
+	cursor.All(ctx, &products)
+	cursor.Close(ctx)
+	return products, 200, nil
+}
+
 
 ///// function to remove the used token from the tokens list
 func (tokens Tokens) Remove(index int) ([]Token) {
