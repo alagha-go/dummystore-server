@@ -40,6 +40,7 @@ type Product struct {
 	Title											string									`json:"title,omitempty" bson:"title,omitempty"`
 	OwnerID											primitive.ObjectID						`json:"owner_id,omitempty" bson:"owner_id,omitempty"`
 	ASIN											string									`json:"asin,omitempty" bson:"asin,omitempty"`
+	New												bool									`json:"new,omitempty" bson:"new,omitempty"`
 	Price											float64									`json:"price,omitempty" bson:"price,omitempty"`
 	Currency										string									`json:"currency,omitempty" bson:"currency,omitempty"`
 	Brand											string									`json:"brand,omitempty" bson:"brand,omitempty"`
