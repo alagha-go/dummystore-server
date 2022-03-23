@@ -37,7 +37,7 @@ func MainHandler() {
 	router.HandleFunc("/api/cart/delete", DeleteCart)
 	router.HandleFunc("/api/product/update", UpdateOneProduct)
 	router.HandleFunc("/api/related-products", GetRelatedProducts)
-	router.HandleFunc("/api/myproducts", GetUpdates)
+	router.HandleFunc("/api/myproducts", GetAllMyProducts)
 }
 
 func Hello(res http.ResponseWriter, req *http.Request) {
