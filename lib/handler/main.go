@@ -19,6 +19,7 @@ func MainHandler() {
 	router.HandleFunc("/api/refresh", RefreshToken)
 	router.HandleFunc("/api/user", GetUser)
 	router.HandleFunc("/api/account/delete", DeleteAccount)
+	router.HandleFunc("/api/account/update", UpdateUser)
 	router.HandleFunc("/api/user/delete", DeleteUser)
 	router.HandleFunc("/api/cart/add", AddToCart)
 	router.HandleFunc("/api/cart/update", UpdateCart)
