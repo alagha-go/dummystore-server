@@ -5,6 +5,7 @@ import (
 	"dummystore/lib/commerce/products"
 	v "dummystore/lib/variables"
 	"errors"
+	"fmt"
 	"os/user"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 
 type Cart struct {
 	ID											primitive.ObjectID								`json:"_id,omitempty" bson:"_id,omitempty"`
-	ProductOwnerID								primitive.ObjectID								`json:"product_owner_id,omitempty" bson:"product_id,omitempty"`
+	ProductOwnerID								primitive.ObjectID								`json:"product_owner_id,omitempty" bson:"product_owner_id,omitempty"`
 	Quantity									int												`json:"quantity,omitempty" bson:"quantity,omitempty"`
 	ProductID									primitive.ObjectID								`json:"product_id,omitempty" bson:"product_id,omitempty"`
 	UserID										primitive.ObjectID								`json:"user_id,omitempty" bson:"user_id,omitempty"`
@@ -56,6 +57,8 @@ func AddProductToCart(userID, productID primitive.ObjectID, quantity int, ordere
 	
 	_, err = collection.InsertOne(ctx, cart)
 	if err != nil {
+		fmt.Println(cart)
+		fmt.Println(err)
 		return cart, 500, v.CouldNotsaveData
 	}
 	return cart, 200, nil
