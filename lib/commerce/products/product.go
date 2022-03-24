@@ -92,15 +92,22 @@ func OwnProduct(productID, userID primitive.ObjectID) (Product, int, error) {
 
 func GetProductByDepartment(depID primitive.ObjectID) ([]Product, int, error) {
 	var products []Product
+	var chosenProducts []Product
 	collection := v.Client.Database("Dummystore").Collection("Products")
 	ctx := context.Background()
 
-	cursor, err := collection.Find(ctx, bson.M{"department": bson.M{"_id": depID}})
+	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		return products, 500, v.DatabaseCouldNotRetrieve
 	}
 	cursor.All(ctx, &products)
 	cursor.Close(ctx)
 
-	return products, 200,nil
+	for _, product := range products {
+		if product.Department.ID == depID {
+			chosenProducts = append(chosenProducts, product)
+		}
+	}
+
+	return chosenProducts, 200,nil
 }
