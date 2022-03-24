@@ -5,7 +5,6 @@ import (
 	"dummystore/lib/commerce/products"
 	v "dummystore/lib/variables"
 	"errors"
-	"fmt"
 	"os/user"
 	"time"
 
@@ -57,8 +56,6 @@ func AddProductToCart(userID, productID primitive.ObjectID, quantity int, ordere
 	
 	_, err = collection.InsertOne(ctx, cart)
 	if err != nil {
-		fmt.Println(cart)
-		fmt.Println(err)
 		return cart, 500, v.CouldNotsaveData
 	}
 	return cart, 200, nil
