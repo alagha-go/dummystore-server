@@ -13,6 +13,7 @@ func MainHandler() {
 	router.HandleFunc("/api/departments", GetAllDepartments)
 	router.HandleFunc("/api/updates", GetUpdates)
 	router.HandleFunc("/api/products", GetProducts)
+	router.HandleFunc("/api/products/dep", GetProductsByDepartment)
 	router.HandleFunc("/api/product", GetProductByAttribute)
 	router.HandleFunc("/api/product/add", AddNewProduct)
 	router.HandleFunc("/api/product/own", OwnProduct)
