@@ -26,12 +26,14 @@ func UpdateUser(user User) (User, int, error) {
 	if user.Email == "" {
 		user.Email = dbUser.Email
 	}else {
-		var existUser User
-		collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&existUser)
-		if dbUser.Email == user.Email {
-			return User{}, 409, v.UserExists
+		if user.Email != dbUser.Email {
+			var existUser User
+			collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&existUser)
+			if dbUser.Email == user.Email {
+				return User{}, 409, v.UserExists
+			}
 		}
-		
+
 		valid := IsEmailValid(user.Email)
 		if !valid {
 			return User{}, 400, v.InvalidEmail
