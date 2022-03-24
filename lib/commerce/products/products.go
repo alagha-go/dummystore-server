@@ -48,7 +48,7 @@ type Product struct {
 	Colors											[]Color									`json:"colors,omitempty" bson:"colors,omitempty"`
 	Rating											Rate									`json:"rating,omitempty" bson:"rating,omitempty"`
 	Sizes											[]string								`json:"sizes,omitempty" bson:"sizes,omitempty"`
-	Department										dep.Department								`json:"department,omitempty" bson:"department,omitempty"`
+	Department										dep.Department							`json:"department,omitempty" bson:"department,omitempty"`
 	About											[]string								`json:"about,omitempty" bson:"about,omitempty"`
 	Description										string									`json:"description,omitempty" bson:"description,omitempty"`
 }

@@ -89,3 +89,18 @@ func OwnProduct(productID, userID primitive.ObjectID) (Product, int, error) {
 	collection.FindOne(ctx, bson.M{"_id": productID}).Decode(&product)
 	return product, 200, nil
 }
+
+func GetProductByDepartment(depID primitive.ObjectID) ([]Product, int, error) {
+	var products []Product
+	collection := v.Client.Database("Dummystore").Collection("Products")
+	ctx := context.Background()
+
+	cursor, err := collection.Find(ctx, bson.M{"department": bson.M{"_id": depID}})
+	if err != nil {
+		return products, 500, v.DatabaseCouldNotRetrieve
+	}
+	cursor.All(ctx, &products)
+	cursor.Close(ctx)
+
+	return products, 200,nil
+}
