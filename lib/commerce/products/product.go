@@ -104,7 +104,7 @@ func GetProductByDepartment(depID primitive.ObjectID) ([]Product, int, error) {
 	cursor.Close(ctx)
 
 	for _, product := range products {
-		if product.Department.ID == depID {
+		if product.Department.ID.Hex() == depID.Hex() {
 			chosenProducts = append(chosenProducts, product)
 		}
 	}

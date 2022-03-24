@@ -36,7 +36,7 @@ func GetProducts(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	res.WriteHeader(http.StatusInternalServerError)
+	res.WriteHeader(200)
 	encoder := json.NewEncoder(res)
 	encoder.SetEscapeHTML(false)
 	encoder.Encode(data)
