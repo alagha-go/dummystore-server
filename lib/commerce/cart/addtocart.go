@@ -39,7 +39,7 @@ func AddProductToCart(userID, productID primitive.ObjectID, quantity int, ordere
 	if ordered && product.OwnerID.Hex() == "000000000000000000000000" {
 		return Cart{}, 400, errors.New("product has no owner")
 	}
-	cart := Cart{ID: primitive.NewObjectID(), Quantity: quantity,ProductID: productID, UserID: userID, ProductOwnerID: product.OwnerID}
+	cart := Cart{ID: primitive.NewObjectID(), Quantity: quantity,ProductID: productID, UserID: userID, ProductOwnerID: product.OwnerID, Ordered: ordered}
 
 	if ordered {
 		cart.TimeOrdered = time.Now()
